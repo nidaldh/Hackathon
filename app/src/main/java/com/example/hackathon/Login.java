@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -64,6 +65,21 @@ public class Login extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    private void updateUI(FirebaseUser currentUser) {
+        if (currentUser!=null){
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     private void showLoginDialog() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Login");
@@ -103,9 +119,8 @@ public class Login extends AppCompatActivity {
                             public void onSuccess(AuthResult authResult) {
                                 dialogInterface.dismiss();
                                 witing.dismiss();
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                startActivity(intent);
-                                finish();
+                                updateUI(FirebaseAuth.getInstance().getCurrentUser());
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -208,9 +223,8 @@ public class Login extends AppCompatActivity {
                                         });
                                 dialogInterface.dismiss();
                                 witing.dismiss();
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                startActivity(intent);
-                                finish();
+                                updateUI(FirebaseAuth.getInstance().getCurrentUser());
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
